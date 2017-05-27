@@ -1,6 +1,10 @@
 ﻿@model object
-           
+
 @(
- Html.Kendo().ComboBoxFor(m => m)        
-        .BindTo((SelectList)ViewData[ViewData.TemplateInfo.GetFullHtmlFieldName("") + "_Data"])
+ Html.Kendo().DropDownListFor(m => m)
+ .DataTextField("Name")
+ .DataValueField("EmployeeId")
+             .Template("#:data.EmployeeId#" + "&nbsp;-&nbsp;" + "#:data.Name#")
+                 .ValueTemplate("#:data.EmployeeId#" + "&nbsp;-&nbsp;" + "#:data.Name#")        
+        .BindTo((System.Collections.IEnumerable)ViewData["employees"])
 )

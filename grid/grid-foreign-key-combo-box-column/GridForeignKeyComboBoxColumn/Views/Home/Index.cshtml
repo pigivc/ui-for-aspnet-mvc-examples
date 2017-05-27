@@ -1,10 +1,21 @@
-﻿
+﻿<link href="~/Content/kendo/2016.2.607/kendo.material.min.css" rel="stylesheet" />
+<link href="~/Content/kendo/2016.2.607/kendo.common-material.min.css" rel="stylesheet" />
+@*<link href="~/Content/kendo/2016.2.607/kendo.black.min.css" rel="stylesheet" />*@
+@*<link href="~/Content/kendo/2016.2.607/kendo.nova.min.css" rel="stylesheet" />*@
+@*<link href="~/Content/kendo/2016.2.607/kendo.office365.min.css" rel="stylesheet" />*@
+@*<link href="~/Content/kendo/2016.2.607/kendo.flat.min.css" rel="stylesheet" />*@
+@*<link href="~/Content/kendo/2016.2.607/kendo.highcontrast.min.css" rel="stylesheet" />*@
+@*<link href="~/Content/kendo/2016.2.607/kendo.materialblack.min.css" rel="stylesheet" />*@
+@*<link href="~/Content/kendo/2016.2.607/kendo.metro.min.css" rel="stylesheet" />*@
 @(Html.Kendo().Grid<GridForeignKeyComboBoxColumn.Models.Order>()
     .Name("Grid")
     .HtmlAttributes(new { @style = "height:742px;" })
     .Columns(columns => {
         columns.Bound(p => p.OrderID);
-        columns.ForeignKey(p => p.EmployeeId, (System.Collections.IEnumerable)ViewData["employees"], "EmployeeId", "Name").EditorTemplateName("ComboBox");
+        columns.ForeignKey(p => p.EmployeeId, (System.Collections.IEnumerable)ViewData["employees"], "EmployeeId", "Name")
+        .ClientTemplate("#:data.EmployeeId#" + "&nbsp;-&nbsp;" + "#:getTextByValue(data)#").EditorTemplateName("ComboBox");
+        //columns.Bound(p=>p.EmployeeId)
+        //.ClientTemplate("#:data.EmployeeId#" + "&nbsp;-&nbsp;" + "#:data.Name#").EditorTemplateName("ComboBox");
         columns.Bound(p => p.OrderDescription);
         columns.Bound(p => p.OrderDate);
         columns.Command(c => {
@@ -32,3 +43,34 @@
         .Update(update => update.Action("ForeignKeyColumn_Update", "Home"))
     )
 )
+
+@(Html.Kendo().Button()
+        .Name("textButton")
+        .HtmlAttributes(new { type = "button" })
+        .Content("Button"))
+
+<p>
+    <input type="button" class="k-button" value="Click me" />
+</p>
+
+<script>
+
+    var collection;
+
+    //get's the text by value
+    function getTextByValue(data) {
+        grid = $("#Grid").data("kendoGrid");
+        //change the index of the column with your index
+        valuesCollection = grid.options.columns[1].values;
+
+        //if the collection is empty - get it from the grid
+        if (!collection) {
+            collection = {};
+            //Set the correct FKColumn index
+            for (var value in valuesCollection) {
+                collection[valuesCollection[value].value] = valuesCollection[value].text;
+            }
+        }
+        return collection[data.EmployeeId];
+    }
+</script>
